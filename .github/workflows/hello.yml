@@ -1,0 +1,27 @@
+name: Hello GitHub Actions
+
+on:
+  push:
+
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Say hello
+        run: echo "Hello from GitHub Actions"
+
+      - name: Current date
+        run: date
+
+      - name: Branch
+        run: echo "Branch: ${{ github.ref_name }}"
+
+      - name: List files
+        run: ls -ltha
+
+      - name: Runner OS
+        run: echo "OS: $RUNNER_OS"
