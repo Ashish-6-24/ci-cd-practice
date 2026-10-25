@@ -1,0 +1,38 @@
+name: Runner OS Comparison
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  ubuntu:
+    name: Ubuntu Hosted Runner
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print OS, hostname and user
+        run: |
+          echo "OS: Ubuntu"
+          hostname
+          whoami
+
+  windows:
+    name: Windows Hosted Runner
+    runs-on: windows-latest
+    steps:
+      - name: Print OS, hostname and user
+        run: |
+          Write-Output "OS: Windows"
+          hostname
+          whoami
+
+  macos:
+    name: macOS Hosted Runner
+    runs-on: macos-latest
+    steps:
+      - name: Print OS, hostname and user
+        run: |
+          echo "OS: macOS"
+          hostname
+          whoami
+
