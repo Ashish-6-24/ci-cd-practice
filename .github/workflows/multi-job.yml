@@ -1,50 +1,44 @@
-name: Multi-Job CI/CD Pipeline 
+name: Multi-Job CI/CD Pipeline
 
 on:
   push:
-    branches: ["main"]
+    branches: ["master"]
   pull_request:
-    branches: ["main"]
+    branches: ["master"]
+  workflow_dispatch:
 
 jobs:
   build:
-    name: Build Application 
-    runs-on: ubuntu-latest 
-    steps:
-      - name: Checkout Code 
-        uses: actions/checkout@v7 
+    name: Build Application
+    runs-on: ubuntu-latest
 
-      - name: Build 
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build
         run: echo "Building the app"
 
   test:
-    name: Run Tests 
-    needs: build 
-    runs-on: ubuntu-latest 
+    name: Run Tests
+    needs: build
+    runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Code 
-        uses: actions/checkout@v7 
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - name: Test 
-        run: echo "Running the application"
-
-  deploy: 
-    name: Deploy Applicaton 
-    needs: test 
-    runs-on: ubuntu-latest 
-    steps: 
-      - name: Checkout Code 
-        uses: actions/checkout@v7 
       - name: Test
-        run: echo "Running tests"
+        run: echo "Running the application tests"
 
   deploy:
     name: Deploy Application
     needs: test
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
       - name: Deploy
-        run: echo "Deploying"  
+        run: echo "Deploying the application"
