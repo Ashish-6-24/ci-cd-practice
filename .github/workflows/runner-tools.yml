@@ -1,7 +1,6 @@
 name: Ubuntu Runner Tools
 
 on:
-  push:
     branches: [main]
   workflow_dispatch:
 

@@ -1,7 +1,6 @@
 name: Environment Variables and Context
 
 on:
-  push:
   workflow_dispatch:
 
 # Workflow-level variable
