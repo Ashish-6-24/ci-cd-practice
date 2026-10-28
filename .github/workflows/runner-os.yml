@@ -1,7 +1,6 @@
 name: Runner OS Comparison
 
 on:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
