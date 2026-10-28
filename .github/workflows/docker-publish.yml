@@ -1,4 +1,6 @@
 
+# Goal: Build and push the Chattingo frontend image
+
 name: Docker Build & Push
 
 on:
@@ -7,57 +9,35 @@ on:
       - master
   pull_request:
     branches:
-      - "**"
+      - master
 
 permissions:
   contents: read
 
 jobs:
   build-and-push:
-    name: Build and Publish Chattingo Frontend
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout practice repository
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@v4
 
-      - name: Checkout Chattingo application
-        uses: actions/checkout@v7.0.1
+      - name: Checkout Chattingo project
+        uses: actions/checkout@v4
         with:
           repository: Ashish-6-24/chattingo
           ref: main
           path: chattingo
 
-      - name: Set image name
-        id: image
-        shell: bash
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        run: |
-          if [[ -n "$DOCKER_USERNAME" ]]; then
-            echo "name=${DOCKER_USERNAME,,}/chattingo-frontend" >> "$GITHUB_OUTPUT"
-          else
-            echo "name=local/chattingo-frontend" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4.4.1
-
-      - name: Extract Docker Metadata
-        id: meta
-        uses: docker/metadata-action@v6.2.0
-        with:
-          images: ${{ steps.image.outputs.name }}
-          tags: |
-            type=raw,value=latest
-            type=sha,format=short,prefix=sha-
+        uses: docker/setup-buildx-action@v3
 
       - name: Docker Login
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and Push
         uses: docker/build-push-action@v5
@@ -65,8 +45,7 @@ jobs:
           context: ./chattingo/frontend
           file: ./chattingo/frontend/Dockerfile
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          tags: |
+            ${{ vars.DOCKERHUB_USERNAME }}/chattingo-frontend-github-action:latest
+            ${{ vars.DOCKERHUB_USERNAME }}/chattingo-frontend-github-action:sha-${{ github.sha }}
 
