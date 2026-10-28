@@ -1,19 +1,19 @@
-name: Day 44- Github Secrets 
+name: Day 44 - Github Secrets
 
-on: 
-  push: 
+on:
+  push:
 
-jobs: 
-  checks_secret: 
+jobs:
+  checks_secret:
     runs-on: ubuntu-latest
-  steps:
-    - name: Check whether the secret is set 
-      env:
-        MY_SECRET_MESSAGE: ${{ secrets.MY_SECRET_MESSAGE}}
-        run: 
-        if [[ -n "$MY_SECRET_MESSAGE" ]]; then 
-          echo "The secret is set: true" 
-         else 
-          echo "The secret is set: false"
-          exit 1 
-          fi 
+    steps:
+      - name: Check whether the secret is set
+        env:
+          MY_SECRET_MESSAGE: ${{ secrets.MY_SECRET_MESSAGE }}
+        run: |
+          if [[ -n "$MY_SECRET_MESSAGE" ]]; then
+            echo "The secret is set: true"
+          else
+            echo "The secret is set: false"
+            exit 1
+          fi
