@@ -35,9 +35,9 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
           if [[ -n "$DOCKER_USERNAME" ]]; then
-            echo "name=${DOCKER_USERNAME,,}/chattingo-frontend-github-action" >> "$GITHUB_OUTPUT"
+            echo "name=${DOCKER_USERNAME,,}/chattingo-frontend" >> "$GITHUB_OUTPUT"
           else
-            echo "name=local/chattingo-frontend-github-action" >> "$GITHUB_OUTPUT"
+            echo "name=local/chattingo-frontend" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Set up Docker Buildx
