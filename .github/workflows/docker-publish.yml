@@ -1,0 +1,72 @@
+
+name: Docker Build & Push
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - "**"
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-push:
+    name: Build and Publish Chattingo Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout practice repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Checkout Chattingo application
+        uses: actions/checkout@v7.0.1
+        with:
+          repository: Ashish-6-24/chattingo
+          ref: main
+          path: chattingo
+
+      - name: Set image name
+        id: image
+        shell: bash
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        run: |
+          if [[ -n "$DOCKER_USERNAME" ]]; then
+            echo "name=${DOCKER_USERNAME,,}/chattingo-frontend-github-action" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=local/chattingo-frontend-github-action" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4.4.1
+
+      - name: Extract Docker Metadata
+        id: meta
+        uses: docker/metadata-action@v6.2.0
+        with:
+          images: ${{ steps.image.outputs.name }}
+          tags: |
+            type=raw,value=latest
+            type=sha,format=short,prefix=sha-
+
+      - name: Docker Login
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Build and Push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./chattingo/frontend
+          file: ./chattingo/frontend/Dockerfile
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
