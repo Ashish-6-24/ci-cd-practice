@@ -1,39 +1,37 @@
 name: Day-44-artifacts
 
 on:
-  push: 
-  workflow_dispatch: 
+  push:
+  workflow_dispatch:
 
-jobs: 
-  generate-and-upload: 
-  name: Job-1 - Generate and Upload Artifact 
-  runs-on: ubuntu-latest 
-
-  steps: 
-    - name: Generate Test Report 
-      run: |
+jobs:
+  generate-and-upload:
+    name: Job-1 - Generate and Upload Artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Test Report
+        run: |
           mkdir -p build-logs
           echo "Test Suite Execution Report - Job 1" > build-logs/test-report.txt
           echo "Status: PASSED" >> build-logs/test-report.txt
           echo "Generated on: $(date)" >> build-logs/test-report.txt
 
-    - name: Upload test report artifact 
-      uses: actions/upload-artifact@v7
-      with: 
-        name: test-report-artifact
-        path: build-logs/test-report.txt
-    
-download-and-use:
-  needs: generate-and-upload
-  runs-on: ubuntu-latest 
-  steps: 
-    - name: Download artifact from Job 1 
-      uses: actions/download-artifact@v8
-      with: 
-        name: test-report-artifact 
+      - name: Upload test report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report-artifact
+          path: build-logs/test-report.txt
 
-    - name: Verify and print download file contents 
-      run: |
-        echo "--- Content of downloaded artifact in JOb 2 ---" 
-        cat test-report.txt 
+  download-and-use:
+    needs: generate-and-upload
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact from Job 1
+        uses: actions/download-artifact@v4
+        with:
+          name: test-report-artifact
 
+      - name: Verify and print download file contents
+        run: |
+          echo "--- Content of downloaded artifact in Job 2 ---"
+          cat test-report.txt
