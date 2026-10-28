@@ -1,0 +1,27 @@
+
+name: Real Script Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  system-info:
+    name: Run System Information Script
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Validate Bash syntax
+        run: bash -n scripts/systems_info.sh
+
+      - name: Run system information script
+        shell: bash
+        run: bash scripts/systems_info.sh
+
